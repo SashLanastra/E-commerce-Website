@@ -42,7 +42,7 @@ const LikesPage = () => {
             <p className='like-total'>Total likes: <b>{totalLikedItems}</b></p>
             <button 
               onClick={onClearPage} 
-              disabled={!totalLikedItems || !clear}
+              disabled={!totalLikedItems || clear}
               className='clear-likes-btn'
               >Clear likes
             </button>
