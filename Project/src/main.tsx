@@ -8,7 +8,6 @@ import { LikesProvider } from './context/LikeProvider.tsx'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    
       <ProductProvider>
         <CartProvider>
           <LikesProvider>
