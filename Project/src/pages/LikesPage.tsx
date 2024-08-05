@@ -1,21 +1,17 @@
-import {useState} from 'react'
 import { useCart } from '../hooks/useCart'
 import { useLiked } from '../hooks/useLiked'
 import LikesComponent from '../components/LikesComponent'
 
 const LikesPage = () => {
-    const [clear, setClear] = useState<boolean>(false)
     const { likeDispatch, LIKE_REDUCER_ACTIONS, likes, totalLikedItems} = useLiked()
     const { CART_REDUCER_ACTIONS, cartDispatch, cart } = useCart()
 
     const onClearPage = () => {
       likeDispatch({type: LIKE_REDUCER_ACTIONS.CLEAR})
-      setClear(true)
     }
     
     const pageContent = 
-      <>
-        <ul className='likes-list'>
+      <ul className='likes-list'>
           {likes.map(item => {
             const inCart: boolean = cart.some(product => product.id === item.id)
             return (
@@ -31,7 +27,6 @@ const LikesPage = () => {
             )
           })}
         </ul>
-      </>
 
     const content = (
       <div className='likes-wrapper'>
@@ -40,7 +35,7 @@ const LikesPage = () => {
           {pageContent}
           <div className='likes-summary'>
             <p className='like-total'>Total likes: <b>{totalLikedItems}</b></p>
-            {totalLikedItems && 
+            {totalLikedItems > 0  && 
             <button 
               onClick={onClearPage}
               className='clear-likes-btn'
