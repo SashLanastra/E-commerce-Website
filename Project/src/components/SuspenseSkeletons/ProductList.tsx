@@ -9,7 +9,7 @@ export const ProductListSkeleton = () => (
   
       {/* Products Grid Skeleton */}
       <div className="max-w-5xl flex flex-wrap justify-center gap-4">
-        {[...Array(8)].map((_, index) => (
+        {[...Array(20)].map((_, index) => (
           <ProductSkeleton key={index + "skeleton"} />
         ))}
       </div>

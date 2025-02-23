@@ -74,7 +74,7 @@ const LikesComponent = ({
         <Button
           text="Remove from Likes"
           size="md"
-          variant="outlined-dark"
+          variant="outlined-cancel"
           onClick={onRemoveItemFromLikes}
         />
       </div>

@@ -27,8 +27,8 @@ const Header = () => {
     >
       <div className="nav-logo">
         <NavLink to="/">
-          <h1>
-            Shopping<span className="logo-span">Spree</span>
+          <h1 className="text-xl lg:text-2xl font-bold">
+            Shopping<span className="text-cyan-800">Spree</span>
           </h1>
         </NavLink>
       </div>
@@ -55,6 +55,7 @@ const Header = () => {
           </NavLink>
 
           {/* Counter circle positioned at top right */}
+          {totalItems > 0 && (
           <div className="absolute -top-2 -right-2 inline-flex items-center justify-center">
             <span
               className={cn("absolute z-10", {
@@ -70,7 +71,8 @@ const Header = () => {
                 { "pop-animation": isAnimating }
               )}
             />
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

@@ -5,7 +5,7 @@ const Footer = () => {
 
     const pageContent = <p>ShoppingSpree &copy; {year}</p>
   return (
-        <footer className='footer w-full'>
+        <footer className='w-full bg-cyan-950 text-center text-white py-4'>
             {pageContent}
         </footer>
   )

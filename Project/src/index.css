@@ -42,14 +42,6 @@ img {
   display: block;
 }
 
-footer {
-  padding: 1.5rem;
-  text-align: center;
-  font-weight: bold;
-  background-color: #350929;
-  color: #c9805a;
-}
-
 .select-box {
   border: none;
   appearance: none;
