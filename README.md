@@ -71,6 +71,8 @@ The decision to persist state in localStorage was driven by performance and user
 
 3. **Offline Capabilities**: localStorage enables basic offline functionality, allowing users to maintain their cart and likes even when temporarily disconnected.
 
+4. **Unchanging Data**: Due to the data never-changing and the servers for Fake Store API being down intermittently, I saw it fit to add the data to local storage infinitely, so that if the client accesses the data even once, the site will always work going forward. This solves the problem of the site being down because products could not load. We look at fetching data from local storage and if there is none we then reach out to FakeStoreAPI to fetch the products.
+
 The combination of Context API and localStorage provides a lightweight yet effective state management solution that meets the application's needs while prioritizing performance and user experience.
 
 ## useReducer Implementation
@@ -130,4 +132,32 @@ const changeBackground = () => {
         setNavBar(false);
     }
 };
+```
+
+## Vitest Testing Configuration
+
+### Strategic Testing Approach
+
+The Vitest configuration leverages jsdom and several key features to provide a robust testing environment:
+
+1. **JSDOM Environment**
+```typescript
+test: {
+    environment: "jsdom",
+    globals: true,
+}
+```
+### Benefits of Using Test UI
+
+The Vitest UI interface (`npm run test:ui`) provides several significant advantages for test development and debugging:
+
+1. **Real-Time Test Execution**
+- Tests run and update in real-time as you make code changes
+- Immediate visual feedback on test status
+- Helps identify failing tests quickly
+- Supports test-driven development (TDD) workflow
+
+2. **Visual Test Organization**
+```bash
+npm run test:ui
 ```
