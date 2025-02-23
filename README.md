@@ -69,13 +69,13 @@ I chose the Context API for state management in this e-commerce application for 
 
 The decision to persist state in localStorage was driven by performance and user experience considerations:
 
-1. **Session Persistence**: Storing cart and likes data in localStorage ensures that users don't lose their selected items on page refreshes or browser closes, providing a seamless shopping experience.
+1. **Improved Data Availibility**: In our use case this is a better caching strategy that allows for a local first approach, reducing the TTI (time to interactive) of the site and provides a fallback for the intermittent API. This strategy enables for greater performance and works because the API response changes infrequently and maintains functionality if our products service is down.
 
-2. **Reduced Server Load**: By maintaining cart state client-side, we minimize unnecessary API calls to fetch cart data on each page load. This improves application performance and reduces server load.
+2. **Session Persistence**: Storing cart and likes data in localStorage ensures that users don't lose their selected items on page refreshes or browser closes, providing a seamless shopping experience.
 
-3. **Offline Capabilities**: localStorage enables basic offline functionality, allowing users to maintain their cart and likes even when temporarily disconnected.
+3. **Reduced Server Load**: By maintaining cart state client-side, we minimize unnecessary API calls to fetch cart data on each page load. This improves application performance and reduces server load.
 
-4. **Unchanging Data**: Due to the data never-changing and the servers for Fake Store API being down intermittently, I saw it fit to add the data to local storage infinitely, so that if the client accesses the data even once, the site will always work going forward. This solves the problem of the site being down because products could not load. We look at fetching data from local storage and if there is none we then reach out to FakeStoreAPI to fetch the products.
+4. **Offline Capabilities**: localStorage enables basic offline functionality, allowing users to maintain their cart and likes even when temporarily disconnected.
 
 The combination of Context API and localStorage provides a lightweight yet effective state management solution that meets the application's needs while prioritizing performance and user experience.
 
