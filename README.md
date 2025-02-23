@@ -2,6 +2,10 @@
 
 A React-based e-commerce platform with product management, cart functionality, search functionality and wishlist features.
 
+[![Deployment Status](https://img.shields.io/badge/deployment-live-success)](https://shopping-spree-site.vercel.app/)
+
+🚀 **Live Demo**: [E-Commerce Store](https://shopping-spree-site.vercel.app/)
+
 ## Features
 
 - Product catalog with search and filtering
