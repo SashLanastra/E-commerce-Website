@@ -1,7 +1,7 @@
 import { ProductType } from "@/utils";
 
 export const fetchProducts = async (): Promise<ProductType[]> => {
-  const response = await fetch("https://fakestoreapi.com/products");
+  const response = await fetch(import.meta.env.VITE_API_URL);
   if (!response.ok) {
     throw new Error("Failed to fetch products");
   }
@@ -9,7 +9,7 @@ export const fetchProducts = async (): Promise<ProductType[]> => {
 };
 
 export const fetchProduct = async (id: number): Promise<ProductType> => {
-  const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/${id}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -20,7 +20,7 @@ export const fetchProductsByCategory = async (
   category: string
 ): Promise<ProductType[]> => {
   const response = await fetch(
-    `https://fakestoreapi.com/products/category/${category}`
+    `${import.meta.env.VITE_API_URL}/category/${category}`
   );
   if (!response.ok) {
     throw new Error("Network response was not ok");
