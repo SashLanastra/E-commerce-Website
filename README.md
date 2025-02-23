@@ -49,4 +49,85 @@ Run tests with UI interface
 npm run test:ui
 ```
 
+## State Management Architecture
 
+### Why Context API?
+
+I chose the Context API for state management in this e-commerce application for several key reasons:
+
+1. **Appropriate Scale**: For a medium-sized application with predictable state updates (cart items, liked products), Context API provides the right balance of functionality and simplicity. While Redux offers more robust features, it would have been overengineering for our use case.
+
+2. **Component Tree Data Flow**: The application requires cart and likes data to be accessible across multiple components at different levels of the component tree. Context API elegantly solves this prop-drilling problem without introducing the complexity of a third-party state management library.
+
+3. **Predictable Updates**: The state updates in this application are straightforward and synchronous (adding/removing items from cart/likes), making Context API's direct state management approach ideal.
+
+### Local Storage Integration
+
+The decision to persist state in localStorage was driven by performance and user experience considerations:
+
+1. **Session Persistence**: Storing cart and likes data in localStorage ensures that users don't lose their selected items on page refreshes or browser closes, providing a seamless shopping experience.
+
+2. **Reduced Server Load**: By maintaining cart state client-side, we minimize unnecessary API calls to fetch cart data on each page load. This improves application performance and reduces server load.
+
+3. **Offline Capabilities**: localStorage enables basic offline functionality, allowing users to maintain their cart and likes even when temporarily disconnected.
+
+The combination of Context API and localStorage provides a lightweight yet effective state management solution that meets the application's needs while prioritizing performance and user experience.
+
+## useReducer Implementation
+
+### Why useReducer?
+
+I implemented useReducer for managing cart and likes state because it provides several advantages for handling complex state logic:
+
+1. **Predictable State Updates**: 
+The reducer pattern ensures that all state transitions are handled through well-defined actions. Each action (ADD, REMOVE, QUANTITY, SUBMIT) follows a strict contract, making state changes predictable and easier to debug.
+
+2. **Centralized State Logic**:
+Instead of spreading state update logic across multiple components, the reducer centralizes all state transformation logic in one place. For example, the cart reducer handles all cart-related operations:
+- Adding items with quantity tracking
+- Removing items
+- Updating quantities
+- Clearing the cart on submission
+
+3. **Type Safety and Error Handling**:
+The implementation leverages TypeScript to ensure type safety and includes robust error handling:
+```typescript
+type CartReducerAction = {
+    type: string,
+    payload?: CartItemType
+}
+```
+
+## useScreenSize Custom Hook
+
+### Purpose and Benefits
+
+The `useScreenSize` hook provides a robust solution for responsive design implementation, offering several key advantages:
+
+1. **Centralized Responsive Logic**
+Instead of repeating media query checks across components, this hook centralizes breakpoint logic in one place:
+```typescript
+type Breakpoints = {
+  isMobile: boolean;   // < 639px
+  isTablet: boolean;   // >= 639px && < 1024px
+  isDesktop: boolean;  // >= 1024px
+};
+```
+
+## useNavbar Custom Hook
+
+### Purpose and Benefits
+
+The `useNavbar` hook provides an elegant solution for implementing scroll-based navigation bar behavior, which is crucial for modern web applications:
+
+1. **Dynamic Navigation Styling**
+The hook monitors scroll position to trigger navigation bar state changes:
+```typescript
+const changeBackground = () => {
+    if(window.scrollY >= 60) {
+        setNavBar(true);
+    } else {
+        setNavBar(false);
+    }
+};
+```
