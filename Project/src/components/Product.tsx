@@ -1,93 +1,115 @@
-import React, { ReactElement } from 'react'
-import { ProductType } from '../context/ProductProvider'
-import { CartReducerActionType, CartReducerAction } from '../context/CartProvider'
-import { LikeReducerAction, LikeReducerActionType } from '../context/LikeProvider'
-import { Link } from 'react-router-dom'
-import { AiFillHeart, AiOutlineHeart, AiFillStar } from "react-icons/ai";
+import React, { ReactElement, memo, useCallback, useMemo } from "react";
+import { ProductType } from "@/utils";
+import {
+  CartReducerActionType,
+  CartReducerAction,
+} from "@/reducers/CartReducer";
+import {
+  LikeReducerAction,
+  LikeReducerActionType,
+} from "@/reducers/LikesReducer";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/Button";
+import LikesIcon from "@/components/LikesIcon";
+import RatingSpan from "@/components/RatingSpan";
+import { cn, formatCurrency } from "@/utils/utilities";
+import { useScreenSize } from "@/hooks/useScreenSize";
 
 type PropsType = {
-    product: ProductType,
-    cartDispatch: React.Dispatch<CartReducerAction>,
-    CART_REDUCER_ACTIONS: CartReducerActionType,
-    inCart: boolean,
-    inLikes: boolean,
-    likeDispatch: React.Dispatch<LikeReducerAction>,
-    LIKE_REDUCER_ACTIONS: LikeReducerActionType
-}
+  product: ProductType;
+  cartDispatch: React.Dispatch<CartReducerAction>;
+  CART_REDUCER_ACTIONS: CartReducerActionType;
+  inCart: boolean;
+  inLikes: boolean;
+  likeDispatch: React.Dispatch<LikeReducerAction>;
+  LIKE_REDUCER_ACTIONS: LikeReducerActionType;
+};
 
-const Product = ({ product, cartDispatch, CART_REDUCER_ACTIONS, inCart, inLikes, likeDispatch, LIKE_REDUCER_ACTIONS }: PropsType): ReactElement => {
+const Product = memo(
+  ({
+    product,
+    cartDispatch,
+    CART_REDUCER_ACTIONS,
+    inCart,
+    inLikes,
+    likeDispatch,
+    LIKE_REDUCER_ACTIONS,
+  }: PropsType): ReactElement => {
+    const { isMobile } = useScreenSize();
+    const img: string = useMemo(
+      () => new URL(product.image, import.meta.url).href,
+      [product.image]
+    );
 
+    const toggleCart = useCallback(() => {
+      const action = {
+        type: inCart ? CART_REDUCER_ACTIONS.REMOVE : CART_REDUCER_ACTIONS.ADD,
+        payload: { ...product, qty: inCart ? 0 : 1 },
+      };
+      cartDispatch(action);
+    }, [inCart, cartDispatch, CART_REDUCER_ACTIONS, product]);
 
-    const img: string = new URL( product.image, import.meta.url).href
+    const toggleLike = useCallback(() => {
+      const action = {
+        type: inLikes ? LIKE_REDUCER_ACTIONS.REMOVE : LIKE_REDUCER_ACTIONS.ADD,
+        payload: { ...product, qty: inLikes ? 0 : 1 },
+      };
+      likeDispatch(action);
+    }, [inLikes, likeDispatch, LIKE_REDUCER_ACTIONS, product]);
 
-    const onAddToCart = () => {
-        inCart 
-            ?cartDispatch({
-                type: CART_REDUCER_ACTIONS.REMOVE,
-                payload: {...product,qty: 0}
-            })
-            :cartDispatch({
-                type: CART_REDUCER_ACTIONS.ADD,
-                payload: {...product, qty: 1}
-            })
-    }
+    const button = useMemo(
+      () => (!inCart ? "+ To Cart" : "- From Cart"),
+      [inCart]
+    );
 
-    const handleLike = () => {
-        inLikes 
-            ?likeDispatch({
-                type: LIKE_REDUCER_ACTIONS.REMOVE,
-                payload:{...product,qty:0}
-            })
-            :likeDispatch({
-                type: LIKE_REDUCER_ACTIONS.ADD,
-                payload:{...product,qty:1}
-            })
-            console.log('first')
-    }
+    return (
+      <article
+        className={cn(
+          "max-w-1/5 flex min-w-56 flex-col gap-4 items-center relative group hover:cursor-pointer px-4 py-6 shadow-custom rounded-md",
+          { "min-w-38": isMobile }
+        )}
+      >
+        <button
+          className="absolute top-0 right-0 p-2 cursor-pointer"
+          onClick={toggleLike}
+        >
+          <LikesIcon inLikes={inLikes} />
+        </button>
+        <Link
+          to={`/products/${product.id}`}
+          className="w-full flex flex-col gap-2"
+        >
+          <div className="p-2">
+            <img
+              src={img}
+              alt={product.title}
+              width={170}
+              className="aspect-[3/2] object-contain block transition-transform duration-300 group-hover:scale-110"
+            />
+          </div>
+          <p className="w-full line-clamp-1 overflow-hidden text-left mt-4">
+            {product.title}
+          </p>
+          <p className="w-full font-semibold text-left">
+            {formatCurrency(product.price)}
+          </p>
+          <RatingSpan rating={product.rating} />
+        </Link>
+        {!isMobile && <Button text={button} size="md" onClick={toggleCart} />}
+      </article>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.product.id === nextProps.product.id &&
+      prevProps.inCart === nextProps.inCart &&
+      prevProps.inLikes === nextProps.inLikes &&
+      prevProps.product.price === nextProps.product.price &&
+      prevProps.product.title === nextProps.product.title
+    );
+  }
+);
 
-    const likeIcon = !inLikes ? <AiOutlineHeart color="red"/> : <AiFillHeart color="red" />
+Product.displayName = "Product";
 
-    const button = !inCart ? '+ To Cart' : '- From Cart'
-
-    const buttonStyle = !inCart ? {backgroundImage: 'linear-gradient(to right, #a44849, #7F2D41, #350929)', color: '#fff'} : {backgroundColor: 'rgba(20,20,20,0.250)', color: '#000'}
-
-
-    const content = (
-        <article>
-            <div className='image-title'>
-                <Link to={`/${product.id}`}>
-                    <img src={img} alt={product.title} className='product-img' width={200}/>
-                    <p className='product-title'>{product.title}</p>
-                </Link>
-            </div>
-            <div className='price-rating-button'>
-                <Link to={`/${product.id}`}>
-                    <p>
-                        <b>
-                            {new Intl.NumberFormat('en-US', {style: 'currency',currency: 'ZAR'}).format(product.price)}
-                        </b>
-                    </p>
-                    <span className='productpage-rating'>
-                        <i><AiFillStar color='#7F2D41'/></i> {`${product.rating.rate} (${product.rating.count})`}
-                    </span>
-                </Link>
-                
-                <div className='button-icon-container'>
-                    <button onClick={onAddToCart} className='add-to-cart-btn' style={buttonStyle}>{button}</button>
-                    <button className='like-icon' onClick={handleLike}>{likeIcon}</button>
-                </div>
-            </div>
-        </article>
-    )
-
-  return (
-
-    <>
-        {content}
-    </>
-
-    )
-  
-}
-
-export default Product
+export default Product;

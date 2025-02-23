@@ -1,107 +1,104 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { ReactElement } from 'react'
-import { ProductType } from '../context/ProductProvider'
-import { CartReducerAction, CartReducerActionType } from '../context/CartProvider'
-import { LikeReducerAction, LikeReducerActionType } from '../context/LikeProvider'
-import { useCart } from '../hooks/useCart'
-import {useLiked} from '../hooks/useLiked'
-import { AiFillHeart, AiOutlineHeart, AiFillStar } from "react-icons/ai";
+import { ReactElement, memo, useCallback } from "react";
+import { CartItemType, LikeItemType, ProductType } from "@/utils";
+import {
+  CartReducerAction,
+  CartReducerActionType,
+} from "@/reducers/CartReducer";
+import {
+  LikeReducerAction,
+  LikeReducerActionType,
+} from "@/reducers/LikesReducer";
+import { useCart } from "@/hooks/useCart";
+import { useLiked } from "@/hooks/useLiked";
+import { Button } from "@/components/Button";
+import RatingSpan from "@/components/RatingSpan";
+import { formatCurrency } from "@/utils/utilities";
+import Details from "@/components/Details";
 
 type PropsType = {
-  currentItem: ProductType,
-  cartDispatch: React.Dispatch<CartReducerAction>,
-  CART_REDUCER_ACTIONS: CartReducerActionType,
-  likeDispatch: React.Dispatch<LikeReducerAction>,
-  LIKE_REDUCER_ACTIONS: LikeReducerActionType,
-  
-}
+  currentItem: ProductType;
+  cartDispatch: React.Dispatch<CartReducerAction>;
+  CART_REDUCER_ACTIONS: CartReducerActionType;
+  likeDispatch: React.Dispatch<LikeReducerAction>;
+  LIKE_REDUCER_ACTIONS: LikeReducerActionType;
+};
 
-const ProductDetail = ({currentItem, cartDispatch, CART_REDUCER_ACTIONS, likeDispatch, LIKE_REDUCER_ACTIONS }: PropsType)=> {
-  const {cart} = useCart()
-  const { likes } = useLiked()
+const ProductDetail = memo(({
+  currentItem,
+  cartDispatch,
+  CART_REDUCER_ACTIONS,
+  likeDispatch,
+  LIKE_REDUCER_ACTIONS,
+}: PropsType) => {
+  const { cart } = useCart();
+  const { likes } = useLiked();
 
-  const inLikes: boolean = likes.some(item => item.id === currentItem.id)
+  const inLikes: boolean = likes.some((item: LikeItemType) => item.id === currentItem.id);
+  const inCart: boolean = cart.some((item: CartItemType) => item.id === currentItem.id);
 
-  const inCart: boolean = cart.some(item => item.id === currentItem.id)
-
-  const handleLikes = () => {
+  const handleLikes = useCallback(() => {
     inLikes
-      ?likeDispatch({
-        type:LIKE_REDUCER_ACTIONS.REMOVE,
-        payload: {...currentItem,qty:0}
-      })
-      :likeDispatch({
-        type:LIKE_REDUCER_ACTIONS.ADD,
-        payload: {...currentItem,qty:1}
-      })
-  }
+      ? likeDispatch({
+          type: LIKE_REDUCER_ACTIONS.REMOVE,
+          payload: { ...currentItem, qty: 0 },
+        })
+      : likeDispatch({
+          type: LIKE_REDUCER_ACTIONS.ADD,
+          payload: { ...currentItem, qty: 1 },
+        });
+  }, [inLikes, likeDispatch, LIKE_REDUCER_ACTIONS, currentItem]);
 
-  const handleCart = () => {
-    inCart 
-      ? cartDispatch({type: CART_REDUCER_ACTIONS.REMOVE, payload:{...currentItem,qty:0}}) 
-      :cartDispatch({type: CART_REDUCER_ACTIONS.ADD, payload:{...currentItem,qty: 1}})
-      console.log('clicked')
-  }
+  const handleCart = useCallback(() => {
+    inCart
+      ? cartDispatch({
+          type: CART_REDUCER_ACTIONS.REMOVE,
+          payload: { ...currentItem, qty: 0 },
+        })
+      : cartDispatch({
+          type: CART_REDUCER_ACTIONS.ADD,
+          payload: { ...currentItem, qty: 1 },
+        });
+  }, [inCart, cartDispatch, CART_REDUCER_ACTIONS, currentItem]);
 
-  const likeIcon = inLikes ? <AiFillHeart color="red"/> : <AiOutlineHeart color="red"/>
-  
-  const itemInCart: string = inCart ? 'Remove From Cart': 'Add To Cart'
+  const cartButtonText: string = inCart ? "Remove From Cart" : "Add To Cart";
+  const likeButtonText: string = inLikes ? "Remove From Likes" : "Add To Likes";
 
-
-  const buttonStyle = !inCart ? {backgroundImage: 'linear-gradient(to right, #a44849, #7F2D41, #350929)', color: '#fff'} : {backgroundColor: 'rgba(20,20,20,0.250)', color: '#000'}
-
-  const activeStyle = {
-    fontWeight: "bold",
-    textDecoration: "none",
-    color: "#A44849"
-}
-
-
-  const content: ReactElement | null = currentItem ? 
-  <div className='product-detail-wrapper'>
-    <img src={currentItem.image} alt={currentItem.title} className='product-detail-img'/>
-    
-    <div className='details-wrapper'>
-      <div className='detail-headings'>
-        <h1 className='detail-heading'>{currentItem.title}</h1>
-        <span className='product-detail-rating'>
-          <i><AiFillStar color='#7F2D41'/></i> 
-          <p className='rating'>{currentItem.rating.rate}</p>
-          <p className='rating'>{`(${currentItem.rating.count})`}</p>
-        </span>
-        <h2>{new Intl.NumberFormat('en-US',{style:'currency',currency:'ZAR'}).format(currentItem.price)}</h2>
-      </div>
-      <div className='detail-toggle-wrapper'>
-        <div className='detail-navbar active'>
-          <NavLink 
-            to={`/${currentItem.id}`}
-            style={({isActive}) => isActive ? activeStyle : undefined }
-            end
-          >Description</NavLink>
-          <NavLink
-            to={`/${currentItem.id}/reviews`}
-            style={({isActive}) => isActive ? activeStyle : undefined }
-          >Reviews</NavLink>
+  const content: ReactElement | null = currentItem ? (
+    <div className="flex lg:flex-row flex-col gap-2">
+      <div className="flex flex-col items-center lg:flex-row lg:justify-between gap-2 shadow-custom p-8 rounded-md mx-4">
+        <img src={currentItem.image} alt={currentItem.title} width={250} />
+        <div className="">
+          <h1 className="">{currentItem.title}</h1>
+          <RatingSpan rating={currentItem.rating} />
+          <h2 className="underline">Description</h2>
+          <Details currentItem={currentItem} />
         </div>
-        <Outlet />
+      </div>
+      <div className="flex flex-col gap-4 mx-4 shadow-custom p-8 rounded-md">
+        <p className="font-bold text-xl">{formatCurrency(currentItem.price)}</p>
+        <Button onClick={handleCart} text={cartButtonText} size="lg" />
+        <Button
+          onClick={handleLikes}
+          text={likeButtonText}
+          size="lg"
+          variant="outlined-dark"
+        />
       </div>
     </div>
-    <div className='product-detail-btns'>
-      <button 
-        onClick={handleCart} 
-        style={buttonStyle}
-        className='detail-cart-btn'
-        >
-          {itemInCart}
-      </button>
-      <button className="product-detail-like-btn" onClick={handleLikes}>{likeIcon}</button>
-    </div>
-  </div>
-  :<p>loading...</p>
-  
- 
-  
-  return content
-}
+  ) : (
+    <p>loading...</p>
+  );
 
-export default ProductDetail
+  return content;
+}, (prevProps, nextProps) => {
+  // Custom comparison function to determine if component should update
+  return (
+    prevProps.currentItem.id === nextProps.currentItem.id &&
+    prevProps.currentItem.price === nextProps.currentItem.price &&
+    prevProps.currentItem.title === nextProps.currentItem.title
+  );
+});
+
+ProductDetail.displayName = 'ProductDetail'; // For better debugging
+
+export default ProductDetail;

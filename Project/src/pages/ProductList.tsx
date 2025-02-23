@@ -1,21 +1,32 @@
-import { ReactElement } from 'react'
-import {useCart} from '../hooks/useCart'
-import {useProduct} from '../hooks/useProduct'
-import Product from '../components/Product'
-import {useLiked} from '../hooks/useLiked'
+import { ReactElement, useState } from 'react'
+import {useCart} from '@/hooks/useCart'
+import {useProduct} from '@/hooks/useProduct'
+import Product from '@/components/Product'
+import {useLiked} from '@/hooks/useLiked'
+import SearchBar from '@/components/SearchBar'
+import { CartItemType, LikeItemType, ProductType } from '@/utils'
+import { ProductListSkeleton } from '@/components/SuspenseSkeletons/ProductList'
 
 const ProductList = () => {
     const { cartDispatch, CART_REDUCER_ACTIONS, cart } = useCart()
-    const{ products } = useProduct()
+    const{ products, isLoading } = useProduct()
     const { likes, likeDispatch, LIKE_REDUCER_ACTIONS } = useLiked()
+    const [searchResults, setSearchResults] = useState<ProductType[]>([])
 
-    let pageConent: ReactElement | ReactElement[] = <p>Loading...</p>
+    let pageContent: ReactElement | ReactElement[] =<p>No products found</p>
 
-    if (products?.length) {
-        pageConent = products.map(product => {
-            const inCart : boolean = cart.some(item => item.id === product.id)
+    const productsToDisplay = searchResults.length > 0 ? searchResults : products
 
-            const inLikes: boolean = likes.some(item => item.id === product.id)
+    if (isLoading) {
+        return (
+            <ProductListSkeleton />
+        )
+    }
+
+    if (productsToDisplay?.length) {
+        pageContent = productsToDisplay.map(product => {
+            const inCart : boolean = cart.some((item: CartItemType) => item.id === product.id)
+            const inLikes: boolean = likes.some((item: LikeItemType) => item.id === product.id)
 
             return (
                 <Product 
@@ -32,16 +43,14 @@ const ProductList = () => {
         })
     }
 
-    const content = (
-        <div className='homepage-wrapper'>
-            <p className='home-heading'>P r o d u c t s</p>
-            <div className="main main-products">
-                {pageConent}
+    return (
+        <div className="flex flex-col items-center justify-center gap-4">
+            <SearchBar setSearchResults={setSearchResults} />
+            <div className="max-w-5xl flex flex-wrap justify-center gap-4">
+                {pageContent}
             </div>
         </div>
-        
     )
-  return content
 }
 
 export default ProductList

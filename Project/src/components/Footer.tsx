@@ -5,11 +5,9 @@ const Footer = () => {
 
     const pageContent = <p>ShoppingSpree &copy; {year}</p>
   return (
-    <div>
-        <footer className='footer'>
+        <footer className='footer w-full'>
             {pageContent}
         </footer>
-    </div>
   )
 }
 
