@@ -5,6 +5,7 @@ import LikesPage from "@/pages/LikesPage";
 import ProductDetailPage from "@/pages/ProductDetailPage";
 import { ProductListSkeleton } from "@/components/SuspenseSkeletons/ProductList";
 import { lazy, Suspense } from "react";
+import PageNotFound from "./pages/PageNotFound";
 
 export const ProductList = lazy(() => import("@/pages/ProductList"))
 
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "likes",
         element: <LikesPage />,
+      },
+      {
+        path: "*",  // Catch all unmatched routes
+        element: <PageNotFound />,
       },
     ],
   },

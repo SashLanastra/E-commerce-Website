@@ -4,6 +4,9 @@ import ProductDetail from '@/components/ProductDetail'
 import ImageCarousel from '@/components/ImageCarousel'
 import { useLiked } from '@/hooks/useLiked'
 import { useProduct } from '@/hooks/useProduct'
+import { ProductListSkeleton } from '@/components/SuspenseSkeletons/ProductList'
+import SiteError from './SiteError'
+import PageNotFound from './PageNotFound'
 
 const ProductDetailPage = () => {
     const { id } = useParams()
@@ -13,13 +16,11 @@ const ProductDetailPage = () => {
     
     const product = singleProduct(Number(id))
 
-    if (isLoading) return <div className='product-detail-page'><p>Loading...</p></div>
+    if (isLoading) return <ProductListSkeleton />
     
-    if (isError) return <div className='product-detail-page'>
-        <p>Error: {error instanceof Error ? error.message : 'An error occurred'}</p>
-    </div>
-
-    if (!product) return <div className='product-detail-page'><p>No product found</p></div>
+    if (isError) return <SiteError errorMessage={error instanceof Error ? error.message : 'An error occurred'} />
+    
+    if (!product) return <PageNotFound />
 
     return (
         <div className='w-full'>
