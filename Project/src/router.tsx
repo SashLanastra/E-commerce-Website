@@ -7,11 +7,11 @@ import { ProductListSkeleton } from "@/components/SuspenseSkeletons/ProductList"
 import { lazy, Suspense } from "react";
 import PageNotFound from "./pages/PageNotFound";
 
-export const ProductList = lazy(() => import("@/pages/ProductList"))
+export const ProductList = lazy(() => import("@/pages/ProductList"));
 
 // Wrapper component to avoid repetition
 const LazyComponent = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<ProductListSkeleton />}>
+  <Suspense fallback={<ProductListSkeleton productsLength={20} />}>
     {children}
   </Suspense>
 );
@@ -26,7 +26,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "products",
-        element: <LazyComponent><ProductList /></LazyComponent>,
+        element: (
+            <LazyComponent>
+              <ProductList />
+            </LazyComponent>
+        ),
       },
       {
         path: "products/:id",
@@ -42,7 +46,7 @@ export const router = createBrowserRouter([
         element: <LikesPage />,
       },
       {
-        path: "*",  // Catch all unmatched routes
+        path: "*", // Catch all unmatched routes
         element: <PageNotFound />,
       },
     ],

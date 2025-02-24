@@ -43,7 +43,7 @@ export const ProductProvider = ({ children }: ChildrenType): ReactElement => {
     isLoading,
     isError,
     error,
-  } = useQuery({
+  } = useQuery<ProductType[], Error>({
     queryKey: ["products"],
     queryFn: async () => {
       try {
@@ -68,6 +68,7 @@ export const ProductProvider = ({ children }: ChildrenType): ReactElement => {
     gcTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: false, // Disable automatic retries so isLoading becomes false on error
   });
 
   // Memoize the singleProduct function to prevent unnecessary rerenders

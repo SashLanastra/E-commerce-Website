@@ -1,6 +1,6 @@
 import { ProductSkeleton } from "./Product";
 
-export const ProductListSkeleton = () => (
+export const ProductListSkeleton = ({productsLength}: {productsLength : number}) => (
     <div className="flex flex-col items-center justify-center gap-4">
       {/* Search Bar Skeleton */}
       <div className="w-full max-w-5xl">
@@ -9,7 +9,7 @@ export const ProductListSkeleton = () => (
   
       {/* Products Grid Skeleton */}
       <div className="max-w-5xl flex flex-wrap justify-center gap-4">
-        {[...Array(20)].map((_, index) => (
+        {[...Array(productsLength)].map((_, index) => (
           <ProductSkeleton key={index + "skeleton"} />
         ))}
       </div>
