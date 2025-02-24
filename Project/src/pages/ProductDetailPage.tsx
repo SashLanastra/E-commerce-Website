@@ -1,7 +1,7 @@
 import { useCart } from '@/hooks/useCart'
 import { useParams } from 'react-router-dom'
 import ProductDetail from '@/components/ProductDetail'
-import ImageCarousel from '@/components/ImageCarousel'
+import ImageCarousel from '@/components/ProductCarousel'
 import { useLiked } from '@/hooks/useLiked'
 import { useProduct } from '@/hooks/useProduct'
 import SiteError from './SiteError'
