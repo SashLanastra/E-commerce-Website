@@ -165,3 +165,27 @@ The Vitest UI interface (`npm run test:ui`) provides several significant advanta
 ```bash
 npm run test:ui
 ```
+
+## Error Boundaries
+
+Error boundaries are used in this project to:
+
+1. **Prevent Crashes**
+- Catch errors in specific components to avoid a full app crash.
+
+2. **Isolate Failures**
+- Replace only the affected component with a fallback UI while keeping the rest of the app functional.
+
+3. **Improve UX**
+- Provide clear error messages during issues, especially with lazy loading and asynchronous data fetching.
+
+4. **Simplify Debugging**
+- Log errors centrally for easier troubleshooting.
+
+```typescript
+<main>
+    <ErrorBoundary>
+        <Outlet />
+    </ErrorBoundary>
+</main>
+```
